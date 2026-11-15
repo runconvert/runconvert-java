@@ -1,7 +1,5 @@
 # RunConvert SDK for Java
 
-> **Not published yet.** This SDK launches on Maven Central soon, so the install command below won't work until then. Updates: https://www.runconvert.com/sdks
-
 Convert files between 240+ formats (3,000+ conversions) with the [RunConvert API](https://www.runconvert.com/docs):
 documents, images, video, audio, ebooks, archives, fonts and CAD. Java 11+, one dependency (Jackson).
 
