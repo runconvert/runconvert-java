@@ -1,0 +1,38 @@
+# Publishes to Maven Central when a version tag is pushed:
+#   1. bump <version> in pom.xml (and VERSION in RunConvert.java) and CHANGELOG.md, merge to main
+#   2. gh release create v0.2.0 --target main   (or: git tag v0.2.0 && git push origin v0.2.0)
+#   3. approve the "release" environment in the Actions tab
+# The Central Portal token and the GPG signing key are secrets of the "release" environment,
+# so they are only available to this job, after approval.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_TOKEN_USERNAME
+          server-password: CENTRAL_TOKEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: The tag matches pom.xml
+        run: test "v$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)" = "$GITHUB_REF_NAME"
+      - run: mvn -B -Prelease deploy
+        env:
+          CENTRAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          CENTRAL_TOKEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
