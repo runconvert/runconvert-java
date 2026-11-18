@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  * }</pre>
  */
 public final class RunConvert {
-    public static final String VERSION = "0.1.0";
+    public static final String VERSION = "0.1.0"; // x-release-please-version
     public static final String DEFAULT_BASE_URL = "https://api.runconvert.com/v3";
     private static final Set<Integer> RETRY_STATUS = Set.of(408, 425, 429, 500, 502, 503, 504);
 
